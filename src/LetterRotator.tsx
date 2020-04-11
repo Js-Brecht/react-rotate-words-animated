@@ -24,10 +24,7 @@ export const RotatingLetters: React.FC<RotatingLetterProps> = ({ word, active, w
             return classes; 
         }
     });
-    const [elRefs] = useState(() => {
-        const refArray: React.RefObject<HTMLSpanElement>[] = Array(letters.length).fill('').map((_, i) => createRef());
-        return (idx: number) => refArray[idx];
-    });
+    const [elRefs] = useState<React.RefObject<HTMLSpanElement>[]>(Array(letters.length).fill('').map((_, i) => createRef()));
 
     useEffect(() => {
         if (!firstRun() && (active || wasActive)) {
@@ -37,8 +34,8 @@ export const RotatingLetters: React.FC<RotatingLetterProps> = ({ word, active, w
             letters.forEach((_, i) => {
                 const timeSpan = getTimeSpan(i);
                 const timeoutHandler = (curLetter: number) => () => {
-                    elRefs(curLetter).current!.classList.toggle(classNames()[curLetter])
-                    elRefs(curLetter).current!.classList.toggle(classNames(active, curLetter)[curLetter])
+                    elRefs[curLetter].current!.classList.toggle(classNames()[curLetter])
+                    elRefs[curLetter].current!.classList.toggle(classNames(active, curLetter)[curLetter])
                 }
                 setTimeout(timeoutHandler(i), timeSpan);
             });
@@ -51,7 +48,7 @@ export const RotatingLetters: React.FC<RotatingLetterProps> = ({ word, active, w
             {letters.map((letter, idx) => {
                 const curClass = classNames()[idx];
                 return (
-                    <span ref={elRefs(idx)} key={`letter-${idx}`} className={`letter ${curClass}`}>
+                    <span ref={elRefs[idx]} key={`letter-${idx}`} className={`letter ${curClass}`}>
                         {letter}
                     </span>
                 );
